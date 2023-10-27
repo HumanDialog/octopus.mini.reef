@@ -1,0 +1,46 @@
+'Genaral status of Tasks, TaskLists and Projects
+const STATUS_DRAFT  = 0     'Draft, Under construction, Concept, Story 
+const STATUS_ACTIVE = 1     'This is a data we usually work on
+const STATUS_CLOSED = 2     'Achive, Done, Refused, Dropped, Failed
+
+class Task
+    Title:          string
+    Status:         integer
+    State:          integer
+    DueDate:		date
+    Tags(64):		string
+    Summary(196):	string
+    Steps[0..n]:	TaskStep
+    Description:	string     
+    Order:          integer
+end class
+
+class TaskStep
+    Label:          string
+    Done:           boolean
+end class
+
+context Task::OnAfterCreate
+post:
+    self.Order = system.allInstances("Task").max(element.Order) + 1000
+
+
+context Task::MoveBefore(beforeTask: Task) :Task
+post:
+    let beforeTaskOrder :integer = beforeTask.Order in
+    beforeTask.Order = self.Order
+    self.Order = beforeTaskOrder
+    result = self
+
+
+context Task::MoveAfter(afterTask :Task) :Task
+post:
+    let afterTaskOrder :integer = afterTask.Order in
+    afterTask.Order = self.Order
+    self.Order = afterTaskOrder
+    result = self
+
+
+
+
+

@@ -1,0 +1,32 @@
+class User
+    login   :string
+	groupid :integer
+    Name    :string
+    Email   :string
+    MyTasks[0..n] :Task <backNav: Responsible(0..1)>
+end class
+    
+
+context User::AddTask(title: string) :Task
+post:
+    result = self.MyTasks.newElement(element.Title = title)
+
+
+context User::AddTaskAfter(title: string, afterTask: Task) :Task
+post:
+    let nextTaskOrder :integer in
+    nextTaskOrder = self.MyTasks.select(element.Order > afterTask.Order).min(element.Order)
+
+    let nextTask : Task in
+    nextTask = self.MyTasks.select(element.Order = nextTaskOrder).first
+
+    if nextTask <> null then
+        let newTaskOrder : long in
+
+        newTaskOrder = afterTask.Order + (nextTask.Order - afterTask.Order)/2
+        
+        result = self.MyTasks.newElement(element.Title = title)
+        result.Order = newTaskOrder
+    else
+        result = self.MyTasks.newElement(element.Title = title)
+    end if

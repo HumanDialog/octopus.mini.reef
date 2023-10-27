@@ -1,0 +1,5 @@
+bin/release/*
+*.hsr
+*.hsp
+build_output.txt
+.reef/*

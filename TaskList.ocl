@@ -1,0 +1,66 @@
+class TaskList
+    Name:           string
+    Tasks<0..n>:    Task       <backNav: OnList>
+    Order:          integer
+end class
+
+context TaskList::OnAfterCreate
+post:
+    self.Order = self.InApp.Lists.max(element.Order) + 1000
+    
+
+context TaskList::MoveUp :TaskList
+post:
+    let prevListOrder: integer in
+    prevListOrder = self.InApp.Lists.select(element.Order < self.Order).max(element.Order)
+
+    let prevList: TaskList in
+    prevList = self.InApp.Lists.select(element.Order = prevListOrder).first
+    
+    if prevList <> null then
+        prevList.Order = self.Order
+        self.Order = prevListOrder
+    end if
+
+    result = self
+
+
+context TaskList::MoveDown :TaskList
+post:
+    let nextListOrder: integer in
+    nextListOrder = self.InApp.Lists.select(element.Order > self.Order).min(element.Order)
+
+    let nextList : TaskList in
+    nextList = self.InApp.Lists.select(element.Order = nextListOrder).first
+    
+    if nextList <> null then
+        nextList.Order = self.Order
+        self.Order = nextListOrder
+    end if
+
+    result = self
+
+
+context TaskList::AddTask(title: string) :Task
+post:
+    result = self.Tasks.newElement(element.Title = title)
+
+
+context TaskList::AddTaskAfter(title: string, afterTask: Task) :Task
+post:
+    let nextTaskOrder :integer in
+    nextTaskOrder = self.Tasks.select(element.Order > afterTask.Order).min(element.Order)
+
+    let nextTask : Task in
+    nextTask = self.Tasks.select(element.Order = nextTaskOrder).first
+
+    if nextTask <> null then
+        let newTaskOrder : long in
+
+        newTaskOrder = afterTask.Order + (nextTask.Order - afterTask.Order)/2
+        
+        result = self.Tasks.newElement(element.Title = title)
+        result.Order = newTaskOrder
+    else
+        result = self.Tasks.newElement(element.Title = title)
+    end if

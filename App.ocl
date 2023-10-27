@@ -1,0 +1,77 @@
+
+class App                   
+    Lists<0..n>:    TaskList  <backNav: InApp>
+    Users<all>:     User
+end class 
+
+
+context App::OnAfterCreate
+post:
+    let firstList: TaskList in
+    
+    firstList = self.Lists.newElement
+    firstList.Name = "Things to do"
+
+
+
+context App::InitSample
+post:
+    ' Clear previous data
+    self.Lists.removeAll
+    self.Users.removeAll
+
+    ' Add some data
+    let list: TaskList in
+    list = self.Lists.newElement
+    list.Name = "Shopping list"
+        list.Tasks.newElement(element.Title = "Butter")
+        list.Tasks.newElement(element.Title = "Milk" and element.Summary="Not too fat, please")
+        list.Tasks.newElement(element.Title = "Bread")
+        list.Tasks.newElement(element.Title = "Tomato")
+        list.Tasks.newElement(element.Title = "Lettuce" and element.Summary="Must be fresh!")
+        list.Tasks.newElement(element.Title = "Beer")
+        list.Tasks.newElement(element.Title = "Honey")
+
+    list = self.Lists.newElement
+    list.Name = "Movies to watch" 
+        list.Tasks.newElement(element.Title = "From Dusk Till Dawn")
+        list.Tasks.newElement(element.Title = "The Lion King")
+        list.Tasks.newElement(element.Title = "Back to the Future")
+
+    list = self.Lists.newElement
+    list.Name = "Places to visit" 
+        list.Tasks.newElement(element.Title = "Paris")
+        list.Tasks.newElement(element.Title = "Swiss Alps")
+        list.Tasks.newElement(element.Title = "Bora Bora")
+        list.Tasks.newElement(element.Title = "Rio de Janeiro")
+
+    ' Add sample users
+    let alice: User = new User in
+    alice.login = "alice@example.com"
+    alice.Name = "Alice"
+
+    let bob: User = new User in
+    bob.login = "bob@example.com"
+    bob.Name = "Bob"
+
+
+
+context App::InsertListAfter(afterList: TaskList) : TaskList
+post:
+    let nextListOrder :integer in
+    nextListOrder = self.Lists.select(element.Order > afterList.Order).min(element.Order)
+
+    let nextTaskList : TaskList in
+    nextTaskList = self.Lists.select(element.Order = nextListOrder).first
+
+    if nextTaskList <> null then
+        let newTaskListOrder : long in
+
+        newTaskListOrder = afterList.Order + (nextTaskList.Order - afterList.Order)/2
+        
+        result = self.Lists.newElement(element.Order = newTaskListOrder)
+    else
+        result = self.Lists.newElement(element.Order = afterList.Order + 1000)
+    end if
+
+
