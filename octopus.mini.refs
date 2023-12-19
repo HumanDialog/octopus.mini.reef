@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<BobcatSolution ProjectName="octopus">
+  <Info>This is auto generated hds file.</Info>
+  <Build>
+    <Output Folder="bin/" File="octopus.hsr"/>
+  </Build>
+  <Debug>
+    <SampleData Folder="bin/" File="octopus.hsp"/>
+  </Debug>
+  <AppSettings>
+    <UserClass Name="User"/>
+    <RootClass Name="App"/>
+    <API Version="v001"/>
+  </AppSettings>
+</BobcatSolution>
