@@ -24,7 +24,7 @@ This command reads the project settings file **.bcs** and all source files with 
 After a successfull compilation you should see the message:  
 `SUCCESS: Compiled: 4 classes, 5 operations, 0 invariants, 0 constraints, 0 functions. Parsed 4 source files.`
 
-> **_NOTE:_**  The application model consists of 4 classes, each in a separate file. A detailed description of the structure can be found on the home page of the project: [https://objectreef.dev/samples/octopus/mini](https://objectreef.dev/samples/checklists)
+> **_NOTE:_**  The application model consists of 4 classes, each in a separate file. A detailed description of the structure can be found on the home page of the project: [https://objectreef.dev/samples/octopus-mini](https://objectreef.dev/samples/octopus-mini)
 
 Although the application model is ready the service does not have any data yet. We can quickly fix this by calling the operation:  
 `app/InitSample`

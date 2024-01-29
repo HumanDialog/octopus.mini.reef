@@ -16,11 +16,11 @@ post:
 
 context App::InitSample
 post:
-    ' Clear previous data
+    -- Clear previous data
     self.Lists.removeAll
     self.Users.removeAll
 
-    ' Add some data
+    -- Add some data
     let list: TaskList in
     list = self.Lists.newElement
     list.Name = "Shopping list"
@@ -45,7 +45,7 @@ post:
         list.Tasks.newElement(element.Title = "Bora Bora")
         list.Tasks.newElement(element.Title = "Rio de Janeiro")
 
-    ' Add sample users
+    -- Add sample users
     let alice: User = new User in
     alice.login = "alice@example.com"
     alice.Name = "Alice"
@@ -57,7 +57,8 @@ post:
 
 
 context App::InsertListAfter(afterList: TaskList) : TaskList
-post:
+post: 
+    
     let nextListOrder :integer in
     nextListOrder = self.Lists.select(element.Order > afterList.Order).min(element.Order)
 

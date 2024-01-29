@@ -1,7 +1,7 @@
-'Genaral status of Tasks, TaskLists and Projects
-const STATUS_DRAFT  = 0     'Draft, Under construction, Concept, Story 
-const STATUS_ACTIVE = 1     'This is a data we usually work on
-const STATUS_CLOSED = 2     'Achive, Done, Refused, Dropped, Failed
+-- Genaral status of Tasks, TaskLists and Projects
+const STATUS_DRAFT  = 0     -- Draft, Under construction, Concept, Story 
+const STATUS_ACTIVE = 1     -- This is a data we usually work on
+const STATUS_CLOSED = 2     -- Achive, Done, Refused, Dropped, Failed
 
 class Task
     Title:          string

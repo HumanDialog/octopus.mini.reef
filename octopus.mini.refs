@@ -2,14 +2,14 @@
 <BobcatSolution ProjectName="octopus">
   <Info>This is auto generated hds file.</Info>
   <Build>
-    <Output Folder="bin/" File="octopus.hsr"/>
+    <Output Folder="bin/" File="octopus.refr"/>
   </Build>
   <Debug>
-    <SampleData Folder="bin/" File="octopus.hsp"/>
+    <SampleData Folder="bin/" File="octopus.reef"/>
   </Debug>
   <AppSettings>
     <UserClass Name="User"/>
     <RootClass Name="App"/>
-    <API Version="yav1"/>
+    <API Version="v001"/>
   </AppSettings>
 </BobcatSolution>
