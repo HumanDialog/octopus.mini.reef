@@ -5,7 +5,7 @@
     <Output Folder="bin/" File="octopus.refr"/>
   </Build>
   <Debug>
-    <SampleData Folder="bin/" File="octopus.reef"/>
+    <SampleData Folder="bin/" File="octopus.refd"/>
   </Debug>
   <AppSettings>
     <UserClass Name="User"/>

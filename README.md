@@ -8,7 +8,7 @@ This is the most basic demonstration application made with ObjectReef technology
 - TODO: [Android app Octopus Mini]()
 
 ## Service launch
-The most convinient way to develop ObjectReef solutions is to use [Visual Studio Code](https://code.visualstudio.com/) with [ObjectReef Language support extension](https://marketplace.visualstudio.com/items?itemName=humandialog.object-reef).
+The most convinient way to develop ObjectReef solutions is to use [Visual Studio Code](https://code.visualstudio.com/) with [Reefs Language support extension](https://marketplace.visualstudio.com/items?itemName=humandialog.object-reef).
 
 To run the service on the local machine, type the following command at the command line in the project directory:  
 `reef dev`  

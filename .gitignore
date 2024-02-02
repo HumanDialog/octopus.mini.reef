@@ -2,6 +2,6 @@ bin/release/*
 *.hsr
 *.hsp
 *.refr
-*.reef
+*.refd
 build_output.txt
 .reef/*
