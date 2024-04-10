@@ -1,32 +1,27 @@
+const MIN_USER_TASK_ORDER = -2147483648
+const LAST_USER_TASK_ORDER = 2147483648 --2^31
+--const LAST_USER_TASK_ORDER_STEP = 16    --2^4
+
+
 class User
     login   :string
 	groupid :integer
     Name    :string
     Email   :string
-    MyTasks[0..n] :Task <backNav: Responsible(0..1)>
+    MyTasks[0..n] :Task <backNav: Actor(0..1)>
 end class
+       
+context User::FinishTasks()
+post:
+    self.MyTasks.select(element.State <> STATE_FINISHED).forAll(element.Finish())
+
+
+context User::ReorderTasks
+post:
+    let order: integer = MIN_USER_TASK_ORDER in
+    self.MyTasks.orderedBy('UserOrder').forAll(element.UserOrder = order and order = order + 1)
+    order = LAST_USER_TASK_ORDER
+    self.MyTasks.orderedBy('UserOrder').revForAll(element.UserOrder = order and order = order - ORDER_STEP) 
     
 
-context User::AddTask(title: string) :Task
-post:
-    result = self.MyTasks.newElement(element.Title = title)
-
-
-context User::AddTaskAfter(title: string, afterTask: Task) :Task
-post:
-    let nextTaskOrder :integer in
-    nextTaskOrder = self.MyTasks.select(element.Order > afterTask.Order).min(element.Order)
-
-    let nextTask : Task in
-    nextTask = self.MyTasks.select(element.Order = nextTaskOrder).first
-
-    if nextTask <> null then
-        let newTaskOrder : long in
-
-        newTaskOrder = afterTask.Order + (nextTask.Order - afterTask.Order)/2
-        
-        result = self.MyTasks.newElement(element.Title = title)
-        result.Order = newTaskOrder
-    else
-        result = self.MyTasks.newElement(element.Title = title)
-    end if
+   

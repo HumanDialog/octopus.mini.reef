@@ -2,17 +2,38 @@
 const STATUS_DRAFT  = 0     -- Draft, Under construction, Concept, Story 
 const STATUS_ACTIVE = 1     -- This is a data we usually work on
 const STATUS_CLOSED = 2     -- Achive, Done, Refused, Dropped, Failed
+--Genaral status of Tasks, TaskLists and Projects
+const STATE_DRAFT       = 0     --Draft, Under construction, Concept, Story 
+const STATE_PREPARED    = 1     --This is a data we usually work on
+-- <2 .. 99> ARE USER DEFINED STATES IN WORKFLOWS FOR PLANNING PHASES
+const STATE_ACCEPTED    = 100
+const STATE_STARTED     = 101
+-- <102 .. 99998> ARE USER DEFINED STATES IN WORKFLOWS FOR PRODUCTION
+const STATE_FINISHED    = 1000     
+const STATE_CANCELLED   = 1001    
+
+--?enum state = [draft: 0, prepared: 1, accepted: 100, started: 101]
+const ORDER_STEP        = 64
+
 
 class Task
     Title:          string
-    Status:         integer
+    Summary(196):	string
+    Tags(64):       string
+    
     State:          integer
     DueDate:		date
-    Tags(64):		string
-    Summary(196):	string
-    Steps[0..n]:	TaskStep
+ 
+    Actor:          User
+    Effort:         integer
+   
+    Steps[0..n]:	TaskStep 
     Description:	string     
-    Order:          integer
+
+    TaskList:       TaskList <backNav: Tasks>
+    ListOrder:      integer
+    UserOrder:      integer
+    Status:         integer --special key for constraints
 end class
 
 class TaskStep
@@ -20,27 +41,8 @@ class TaskStep
     Done:           boolean
 end class
 
-context Task::OnAfterCreate
+
+context Task::Finish()
 post:
-    self.Order = system.allInstances("Task").max(element.Order) + 1000
-
-
-context Task::MoveBefore(beforeTask: Task) :Task
-post:
-    let beforeTaskOrder :integer = beforeTask.Order in
-    beforeTask.Order = self.Order
-    self.Order = beforeTaskOrder
-    result = self
-
-
-context Task::MoveAfter(afterTask :Task) :Task
-post:
-    let afterTaskOrder :integer = afterTask.Order in
-    afterTask.Order = self.Order
-    self.Order = afterTaskOrder
-    result = self
-
-
-
-
-
+    self.State = STATE_FINISHED
+    self.Status = STATUS_CLOSED

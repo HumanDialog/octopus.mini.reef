@@ -22,7 +22,8 @@ post:
 
     -- Add some data
     let list: TaskList in
-    list = self.Lists.newElement
+    list = self.Lists.newElement(element.Order = 0)
+
     list.Name = "Shopping list"
         list.Tasks.newElement(element.Title = "Butter")
         list.Tasks.newElement(element.Title = "Milk" and element.Summary="Not too fat, please")
@@ -31,20 +32,23 @@ post:
         list.Tasks.newElement(element.Title = "Lettuce" and element.Summary="Must be fresh!")
         list.Tasks.newElement(element.Title = "Beer")
         list.Tasks.newElement(element.Title = "Honey")
-
-    list = self.Lists.newElement
+    list.ReorderTasks()
+    
+    list = self.Lists.newElement(element.Order = 10)
     list.Name = "Movies to watch" 
         list.Tasks.newElement(element.Title = "From Dusk Till Dawn")
         list.Tasks.newElement(element.Title = "The Lion King")
         list.Tasks.newElement(element.Title = "Back to the Future")
-
-    list = self.Lists.newElement
+    list.ReorderTasks()
+    
+    list = self.Lists.newElement(element.Order = 20)
     list.Name = "Places to visit" 
         list.Tasks.newElement(element.Title = "Paris")
         list.Tasks.newElement(element.Title = "Swiss Alps")
         list.Tasks.newElement(element.Title = "Bora Bora")
         list.Tasks.newElement(element.Title = "Rio de Janeiro")
-
+    list.ReorderTasks()
+    
     -- Add sample users
     let alice: User = new User in
     alice.login = "alice@example.com"
