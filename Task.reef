@@ -1,7 +1,6 @@
 -- Genaral status of Tasks, TaskLists and Projects
-const STATUS_DRAFT  = 0     -- Draft, Under construction, Concept, Story 
-const STATUS_ACTIVE = 1     -- This is a data we usually work on
-const STATUS_CLOSED = 2     -- Achive, Done, Refused, Dropped, Failed
+const STATUS_ACTIVE = 0     -- This is a data we usually work on
+const STATUS_ARCHIVED = 1
 --Genaral status of Tasks, TaskLists and Projects
 const STATE_DRAFT       = 0     --Draft, Under construction, Concept, Story 
 const STATE_PREPARED    = 1     --This is a data we usually work on
@@ -20,6 +19,7 @@ class Task
     Title:          string
     Summary(196):	string
     Tags(64):       string
+    Index(16):      string
     
     State:          integer
     DueDate:		date
@@ -30,19 +30,32 @@ class Task
     Steps[0..n]:	TaskStep 
     Description:	string     
 
-    TaskList:       TaskList <backNav: Tasks>
+    TaskList(0..1):       TaskList
     ListOrder:      integer
     UserOrder:      integer
-    Status:         integer --special key for constraints
+    Status:         integer
+
+    TaskListId:     integer
+    ActorId:        integer
 end class
+
 
 class TaskStep
     Label:          string
     Done:           boolean
+    Order:          integer
 end class
 
+
+constraint Task::TaskList
+    self.TaskListId = element.Id
 
 context Task::Finish()
 post:
     self.State = STATE_FINISHED
-    self.Status = STATUS_CLOSED
+    -- self.Status = STATUS_CLOSED
+
+context Task::Archive()
+post:
+    self.Status = STATUS_ARCHIVED
+

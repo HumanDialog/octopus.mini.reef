@@ -1,17 +1,28 @@
 
-class App                   
-    Lists<0..n>:    TaskList  <backNav: InApp>
+class App
+    Lists(0..n):    TaskList
+    ArchivedLists(0..n): TaskList
     Users<all>:     User
+    AllTags:        string
+    ListIndexPrefix:    string
+    TaskIndexCounter:   integer
 end class 
-
 
 context App::OnAfterCreate
 post:
+    self.ListIndexPrefix = 'OCT'
     let firstList: TaskList in
     
     firstList = self.Lists.newElement
     firstList.Name = "Things to do"
 
+
+constraint App::Lists
+    element.Archived = 0
+
+
+constraint App::ArchivedLists
+    element.Archived = 1
 
 
 context App::InitSample
@@ -58,25 +69,64 @@ post:
     bob.login = "bob@example.com"
     bob.Name = "Bob"
 
+context App::InitSample4Basic
+post:
+    -- Clear previous data
+    self.Lists.forAll( element.Tasks.removeAll and element.ArchivedTasks.removeAll)
+    self.Lists.removeAll
+    self.ArchivedLists.forAll( element.Tasks.removeAll and element.ArchivedTasks.removeAll)
+    self.ArchivedLists.removeAll
+    self.Users.removeAll
 
+    -- Add sample users
+    let alice: User = new User in
+    alice.login = "alice@example.com"
+    alice.Name = "Alice"
 
-context App::InsertListAfter(afterList: TaskList) : TaskList
-post: 
+    let bob: User = new User in
+    bob.login = "bob@example.com"
+    bob.Name = "Bob"
+
+    self.AllTags = "#urgent #grocery #dairy #beauty #clothes #party"
+
+    -- Add some data
+    let list: TaskList in
+    list = self.Lists.newElement(element.Order = 0)
+    list.TaskStates = '[{"name":"Required","state":1},{"name":"Running out","state":2},{"name":"Delivering","state":3}]'
+    list.Name = "Shopping list"
+    list.IndexPrefix = 'SHP'
+        list.CreateTask('Butter', 'Buy a few on promotion', 1, '#urgent #grocery #dairy', alice)
+        list.CreateTask('Milk', 'As fat as you can', 1, '#grocery #dairy', alice)   
+        list.CreateTask('Bread', 'Take three, two of them will be frozen', 2, '#urgent #grocery', alice)
+        list.CreateTask('Tomatos', '', 1, '#grocery #party');
+        list.CreateTask('Lettuce', 'Must be fresh!', 1, '#grocery #party')
+        list.CreateTask('Beer', "Hefeweizens and Pilsners only, they don't drink modern styles", 3, '#grocery #party')
+        list.CreateTask('Honey', "It's needed for outmeal", 3, '#grocery', alice)
+        list.CreateTask('Toothpaste', '', 2, '#beauty', alice)
+        list.CreateTask('Shower gel', '', 2, '#beauty', alice)
+        list.CreateTask('Sneakers', "It's already spring, I need new shoes", 3, '#urgent #clothes', alice)
+    list.ReorderTasks()
+
+    list = self.Lists.newElement(element.Order = 10)
+    list.Name = "Movies to watch" 
+    list.IndexPrefix = 'MVS'
+        list.CreateTask('From Dusk Till Dawn', '', 0)
+        list.CreateTask('The Lion King', '', 0)
+        list.CreateTask('Back to the Future', '', 0)
+    list.ReorderTasks()
     
-    let nextListOrder :integer in
-    nextListOrder = self.Lists.select(element.Order > afterList.Order).min(element.Order)
+    list = self.Lists.newElement(element.Order = 20)
+    list.Name = "Places to visit" 
+    list.IndexPrefix = 'PLC'
+        list.CreateTask('Paris', '', 0)
+        list.CreateTask('Swiss Alps', '', 0)
+        list.CreateTask('Bora Bora', '', 0)
+        list.CreateTask('Rio de Janeiro', '', 0)
+    list.ReorderTasks()
+    
+    
+    
 
-    let nextTaskList : TaskList in
-    nextTaskList = self.Lists.select(element.Order = nextListOrder).first
 
-    if nextTaskList <> null then
-        let newTaskListOrder : long in
-
-        newTaskListOrder = afterList.Order + (nextTaskList.Order - afterList.Order)/2
-        
-        result = self.Lists.newElement(element.Order = newTaskListOrder)
-    else
-        result = self.Lists.newElement(element.Order = afterList.Order + 1000)
-    end if
 
 

@@ -5,3 +5,4 @@ bin/release/*
 *.refd
 build_output.txt
 .reef/*
+!.reef/app_id

@@ -11,6 +11,9 @@ class User
     MyTasks[0..n] :Task <backNav: Actor(0..1)>
 end class
        
+constraint User::MyTasks
+    element.ActorId = self.Id and element.Status = STATUS_ACTIVE
+
 context User::FinishTasks()
 post:
     self.MyTasks.select(element.State <> STATE_FINISHED).forAll(element.Finish())
