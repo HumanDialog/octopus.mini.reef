@@ -8,6 +8,14 @@ class App
     TaskIndexCounter:   integer
 end class 
 
+
+constraint App::Lists
+    element.Archived = false
+
+
+constraint App::ArchivedLists
+    element.Archived = true
+
 context App::OnAfterCreate
 post:
     self.ListIndexPrefix = 'OCT'
@@ -16,60 +24,7 @@ post:
     firstList = self.Lists.newElement
     firstList.Name = "Things to do"
 
-
-constraint App::Lists
-    element.Archived = 0
-
-
-constraint App::ArchivedLists
-    element.Archived = 1
-
-
 context App::InitSample
-post:
-    -- Clear previous data
-    self.Lists.removeAll
-    self.Users.removeAll
-
-    -- Add some data
-    let list: TaskList in
-    list = self.Lists.newElement(element.Order = 0)
-
-    list.Name = "Shopping list"
-        list.Tasks.newElement(element.Title = "Butter")
-        list.Tasks.newElement(element.Title = "Milk" and element.Summary="Not too fat, please")
-        list.Tasks.newElement(element.Title = "Bread")
-        list.Tasks.newElement(element.Title = "Tomato")
-        list.Tasks.newElement(element.Title = "Lettuce" and element.Summary="Must be fresh!")
-        list.Tasks.newElement(element.Title = "Beer")
-        list.Tasks.newElement(element.Title = "Honey")
-    list.ReorderTasks()
-    
-    list = self.Lists.newElement(element.Order = 10)
-    list.Name = "Movies to watch" 
-        list.Tasks.newElement(element.Title = "From Dusk Till Dawn")
-        list.Tasks.newElement(element.Title = "The Lion King")
-        list.Tasks.newElement(element.Title = "Back to the Future")
-    list.ReorderTasks()
-    
-    list = self.Lists.newElement(element.Order = 20)
-    list.Name = "Places to visit" 
-        list.Tasks.newElement(element.Title = "Paris")
-        list.Tasks.newElement(element.Title = "Swiss Alps")
-        list.Tasks.newElement(element.Title = "Bora Bora")
-        list.Tasks.newElement(element.Title = "Rio de Janeiro")
-    list.ReorderTasks()
-    
-    -- Add sample users
-    let alice: User = new User in
-    alice.login = "alice@example.com"
-    alice.Name = "Alice"
-
-    let bob: User = new User in
-    bob.login = "bob@example.com"
-    bob.Name = "Bob"
-
-context App::InitSample4Basic
 post:
     -- Clear previous data
     self.Lists.forAll( element.Tasks.removeAll and element.ArchivedTasks.removeAll)
@@ -92,7 +47,25 @@ post:
     -- Add some data
     let list: TaskList in
     list = self.Lists.newElement(element.Order = 0)
-    list.TaskStates = '[{"name":"Required","state":1},{"name":"Running out","state":2},{"name":"Delivering","state":3}]'
+    
+    -- list.TaskStates = '[{"name":"Required","state":0},{"name":"Running out","state":100},{"name":"Delivering","state":1000}]'
+    let states: JsonObject = [
+        {
+            name: 'Required',
+            state: 0
+        },
+        {
+            name: 'Running out',
+            state: 100
+        },
+        {
+            name: 'Delivering',
+            state: STATE_FINISHED
+        }
+    ]
+
+    list.TaskStates = states.ToString()
+
     list.Name = "Shopping list"
     list.IndexPrefix = 'SHP'
         list.CreateTask('Butter', 'Buy a few on promotion', 1, '#urgent #grocery #dairy', alice)
@@ -123,7 +96,6 @@ post:
         list.CreateTask('Bora Bora', '', 0)
         list.CreateTask('Rio de Janeiro', '', 0)
     list.ReorderTasks()
-    
     
     
 

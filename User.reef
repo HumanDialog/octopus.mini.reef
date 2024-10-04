@@ -8,7 +8,7 @@ class User
 	groupid :integer
     Name    :string
     Email   :string
-    MyTasks[0..n] :Task <backNav: Actor(0..1)>
+    MyTasks(0..n) :Task <backNav: Actor(0..1)>
 end class
        
 constraint User::MyTasks

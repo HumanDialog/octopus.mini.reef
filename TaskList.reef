@@ -3,7 +3,7 @@ class TaskList
     Tasks(0..n):    Task
     ArchivedTasks(0..n): Task
     Order:          integer
-    TaskStates:     string
+    TaskStates:  string
     Archived:       boolean
     IndexPrefix:    string
 end class
@@ -15,6 +15,15 @@ constraint TaskList::Tasks
 constraint TaskList::ArchivedTasks
     element.TaskListId = self.Id and element.Status = STATUS_ARCHIVED
 
+
+context TaskList::FinishAll()
+post:
+    self.Tasks.select(element.State <> STATE_FINISHED).forAll(element.Finish())
+
+context TaskList::Archive()
+post:
+    self.Tasks.forAll(element.Archive())
+    self.Archived = true
 
 context TaskList::CreateTaskEx(properties: JsonObject): Task
 post:
@@ -49,20 +58,14 @@ post:
     result = self.CreateTaskEx(props)
     result.Actor = actor
 
-context TaskList::FinishAll()
-post:
-    self.Tasks.select(element.State <> STATE_FINISHED).forAll(element.Finish())
 
 
-context TaskList::ReorderTasks
+context TaskList::ReorderTasks()
 post:
     let order: integer = MIN_USER_TASK_ORDER in
     self.Tasks.orderedBy('ListOrder').forAll(element.ListOrder = order and order = order + 1)
     order = (order - MIN_USER_TASK_ORDER) * ORDER_STEP
     self.Tasks.orderedBy('ListOrder').revForAll(element.ListOrder = order and order = order - ORDER_STEP)
 
-context TaskList::Archive
-post:
-    self.Tasks.forAll(element.Archive())
-    self.Archived = true
+
 
